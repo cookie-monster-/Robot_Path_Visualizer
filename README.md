@@ -9,4 +9,4 @@ next you will have to change the filepaths of the two files (hopperPath.txt and 
 the desktop is a great spot...
 
 you can change pNum to = whatever number you want, everything is multiplied by it, all of my measurements are in feet.
-I multiply everything by 12 so 1 pixel=1 inch, if you want 2 pixels=1 inch, just change: pNum=[expr 12*2], 12*0.5 also works, etc.
+I multiply everything by 12 so 1 pixel=1 inch, if you want 2 pixels=1 inch, just change: pNum=[expr 12x2], 12x0.5 also works, etc.
