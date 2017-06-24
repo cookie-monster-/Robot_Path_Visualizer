@@ -1,13 +1,13 @@
 package require Tk
 #change the filepath of both of these to wherever you put them on your pc
-set 254_path [file join C: /Users Drew Desktop pathGui hopperPath.txt]
-set test_field [file join C: /Users Drew Desktop pathGui Field.csv]
+set 254_path [file join C: /Users frc4587 Desktop pathGui testPath.txt]
+set test_field [file join C: /Users frc4587 Desktop pathGui Field.csv]
 
 #you can change this to make the whole field+robot bigger or smaller, example: 12*2 is twice as big as 12*1
 set pNum [expr 12*1]
 
 wm geometry . [regsub -- {^[0-9]+x[0-9]+} [wm geometry .] 1000x600]
-grid [tk::canvas .canvas -scrollregion "0 0 1000 1000" -yscrollcommand ".v set" -xscrollcommand ".h set"] -sticky nwes -column 0 -row 0
+grid [tk::canvas .canvas -scrollregion "0 0 3000 3000" -yscrollcommand ".v set" -xscrollcommand ".h set"] -sticky nwes -column 0 -row 0
 grid columnconfigure . 0 -weight 1
 grid rowconfigure . 0 -weight 1
 
@@ -16,8 +16,17 @@ grid [tk::scrollbar .v -orient vertical -command ".canvas yview"] -column 1 -row
 grid [ttk::sizegrip .sz] -column 1 -row 1 -sticky se
 
 set heading 0
-set length  [expr {2.25*$pNum}]
-set width   [expr {2.25*$pNum}]
+
+set sideGear true
+#reaper-------------------
+#0.5ft=bumpers
+set length  [expr {29/12*$pNum+0.5*$pNum}]
+set width   [expr {2.25*$pNum+0.5*$pNum}]
+#-------------------------
+#memefire-----------------
+#set length  [expr {27.25/12*$pNum+0.5*$pNum}]
+#set width   [expr {28/12*$pNum+0.5*$pNum}]
+#-------------------------
 
 proc drawFE {color name startx starty args} {
 set largs [split $args  ]
@@ -192,14 +201,28 @@ proc animateRobot {} {
 }
 
 proc runPath {} {
-    global istep length width pNum
+    global istep length width pNum sideGear
     .canvas coords robot [list 0 0 0 $width $length $width $length 0]
     #.canvas move robot [expr 3*$pNum] [expr (3*$pNum)+(27.16666667/2*$pNum)-(1.125*$pNum)]
-.canvas move robot [expr 3*$pNum] [expr (27*$pNum)-(2.25*$pNum)]
+	
+	#hopperAuto
+	#.canvas move robot [expr 3*$pNum] [expr (27*$pNum)-(2.25*$pNum)]
+	
+	#sideGearLeft
+	if {$sideGear} {
+		.canvas move robot [expr 3*$pNum] [expr (27*$pNum/2)-(65/12*$pNum)]
+	} else {
+		.canvas move robot [expr 3*$pNum] [expr (30*$pNum/2)]
+	}
     set istep 0
     after idle [list after 0 animateRobot]
 }
-.canvas move lxy [expr (3*$pNum)+(1.125*$pNum)] [expr (27*$pNum)-(1.125*$pNum)]
-.canvas move rxy [expr (3*$pNum)+(1.125*$pNum)] [expr (27*$pNum)-(1.125*$pNum)]
+if {$sideGear} {
+	.canvas move lxy [expr (3*$pNum)+(1.125*$pNum)] [expr (27*$pNum/2)-(65/12*$pNum)+($width/2)]
+	.canvas move rxy [expr (3*$pNum)+(1.125*$pNum)] [expr (27*$pNum/2)-(65/12*$pNum)+($width/2)]
+} else {
+	.canvas move lxy [expr (3*$pNum)+(1.125*$pNum)] [expr (30*$pNum/2)+($width/2)]
+	.canvas move rxy [expr (3*$pNum)+(1.125*$pNum)] [expr (30*$pNum/2)+($width/2)]
+}
 
 bind .canvas <1> {runPath}
